@@ -1,4 +1,6 @@
 
+
+
 #include "tester.hpp"
 #include "stopwatch.hpp"
 
@@ -13,8 +15,8 @@ using namespace mczip;
 Tester::Tester(std::ostream &output) : mOutput(output) {
 
   mOutput << std::left << std::setw(25) << "File" << std::left << std::setw(8)
-          << "Test" << std::left << std::setw(10) << "Rate" << std::setw(8)
-          << "Comp/s" << std::setw(8) << "Decomp/s: " << std::endl;
+          << "Test" << std::left << std::setw(10) << "Rate" << std::left << std::setw(15)
+          << "Comp(MB/s)" << std::setw(15) << "Decomp(MB/s): " << std::endl;
 }
 
 bool Tester::test(const std::string &filename) {
@@ -26,7 +28,7 @@ bool Tester::test(const std::string &filename) {
   std::string compressedBuffer = mCompressor.compress(mBuffer);
   checkBytes(mCompressor.decompress(compressedBuffer));
 
-  mOutput << std::right << std::setw(10) << mCompressor.getCompressionRate();
+  mOutput << std::left << std::setw(10) << mCompressor.getCompressionRate();
 
   size_t numIterations = 0;
   Stopwatch watch;
@@ -39,7 +41,7 @@ bool Tester::test(const std::string &filename) {
     watch.stop();
   } while (watch.getTimeDiffInSecondsWithHighresolution() < 1.0);
 
-  mOutput << std::setw(8) << (numIterations * mBuffer.size()) / 1024 / 1024;
+  mOutput << std::setw(15) << (numIterations * mBuffer.size()) / 1024 / 1024;
 
   numIterations = 0;
   watch.start();
@@ -49,7 +51,7 @@ bool Tester::test(const std::string &filename) {
     watch.stop();
   } while (watch.getTimeDiffInSecondsWithHighresolution() < 1.0);
 
-  mOutput << std::setw(8) << (numIterations * mBuffer.size()) / 1024 / 1024
+  mOutput << std::setw(15) << (numIterations * mBuffer.size()) / 1024 / 1024
           << std::endl;
 
   return mTestPassed;
